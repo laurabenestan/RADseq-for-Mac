@@ -71,8 +71,9 @@ graph_1+geom_line()+scale_x_continuous(breaks=c(1,2,3,4,5))+
   theme(panel.border = element_rect(colour="black", fill=NA, size=3),
         axis.title=element_text(size=18,colour="black",family="Helvetica",face="bold"))
 ```
-### Save the graph
-ggsave("Admixture_cross-validation_mullus_335ind.pdf",width=7,height=5,dpi=600)
+Save the graph
+```{r}
+ggsave("Admixture_cross-validation.pdf",width=7,height=5,dpi=600)
 dev.off()
-
+```
 
