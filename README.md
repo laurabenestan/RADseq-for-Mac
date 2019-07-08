@@ -77,3 +77,24 @@ ggsave("Admixture_cross-validation.pdf",width=7,height=5,dpi=600)
 dev.off()
 ```
 ![Admixture cross-validation results.](Admixture.png)
+
+## Install [R studio](https://www.rstudio.com/products/rstudio/download/)
+R studio has developped an integrated development environment for R, with a console that supports direct code execution.
+
+# Install devtools package
+First install devtools package that allows you to directly download R package available in github.
+```{r}
+install.packages("devtools")
+```
+
+Then, a variety of useful package for population genomics such as ***adegenet***, ***strataG***, ***assigner*** are available in R.
+
+```{r}
+install.packages("adegenet")
+install.packages("strataG")
+install.packages("assigner")
+install.packages("radiator")
+install.packages("ape")
+install.packages("poppr")
+install.packages("hierfstat")
+```
