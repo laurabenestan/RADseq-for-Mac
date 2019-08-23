@@ -24,6 +24,7 @@ Include: bash vim less man-db apt-utils tzdata
 
 %labels
     MAINTAINER Pierre-Edouard_GUERIN
+    MAINTAINER2 Laura_Benestan
     INSTITUTE CNRS
     TEAM Biogeographie_Ecologie_Vertebres
     BUILD 1.0
