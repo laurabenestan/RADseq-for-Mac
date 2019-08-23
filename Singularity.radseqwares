@@ -1,0 +1,149 @@
+BootStrap: debootstrap
+OSVersion: xenial
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+IncludeCmd: yes
+Include: bash vim less man-db apt-utils tzdata
+
+
+%environment
+    R_VERSION=3.6.0
+    export R_VERSION
+    R_CONFIG_DIR=/etc/R/
+    export R_CONFIG_DIR
+    export PATH=/opt/conda/bin:$PATH
+    export PATH=/opt/biotools/bin:$PATH
+    export ROOTSYS=/opt/biotools/root
+    export LD_LIBRARY_PATH='$LD_LIBRARY_PATH:$ROOTSYS/lib'
+    export PATH=/opt/workflows/bin:$PATH
+    export LC_CTYPE=en_US.UTF-8
+    export LC_ALL=C.UTF-8
+
+%runscript
+    echo "Opening container...ubuntu xenial: vcftools, admixture, plink, R"
+
+
+%labels
+    MAINTAINER Pierre-Edouard_GUERIN
+    INSTITUTE CNRS
+    TEAM Biogeographie_Ecologie_Vertebres
+    BUILD 1.0
+    SINGULARITY_VERSION 2.5.2
+    curl 7.47.0
+    vcftools 0.1.17
+    admixture 1.3.0
+    plink 1.07
+    R 3.6
+
+
+%post
+    mv /etc/apt/sources.list /etc/apt/sources.list.bak
+
+    echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse" >> /etc/apt/sources.list
+
+    apt-get -y --force-yes update
+
+    ## git, make, wget    
+    yes | apt-get install build-essential
+    yes | apt-get install git
+    yes | apt install wget
+    yes | apt-get install autoconf autogen libtool
+
+    ## zlib, cmake
+    yes | apt install zlib1g-dev libbz2-dev pkg-config cmake
+
+    ## curl, lzma, unzip
+    yes | apt-get install curl liblzma-dev libncurses5-dev unzip
+
+
+    ## libraries, gfortran, gcc
+    yes | apt-get install libblas3 libblas-dev liblapack-dev liblapack3
+    yes | apt-get install gcc fort77 aptitude
+    aptitude install -y g++ xorg-dev libreadline-dev  gfortran
+    yes | apt-get install libssl-dev libxml2-dev libpcre3-dev libbz2-dev libcurl4-openssl-dev
+
+    ## JAVA
+    yes | apt-get install openjdk-8-jdk
+
+############### Install R From Source ##############
+    cd $HOME
+    wget https://cran.rstudio.com/src/base/R-3/R-3.6.0.tar.gz
+    tar xvf R-3.6.0.tar.gz
+    cd R-3.6.0
+    ./configure --enable-R-static-lib --with-blas --with-lapack --enable-R-shlib=yes 
+    make
+    make install
+
+############### Install CRAN Package ##############
+    R --slave -e "install.packages( c('stringr', 'ggplot2','devtools','dplyr','adegenet','strataG','assigner','radiator','ape','poppr','hierfstat','dartR','StAMPP','genetics','LDna','ade4'), dependencies=TRUE,repos='https://cloud.r-project.org')"
+
+
+    apt-get install -y  autotools-dev automake cmake curl grep sed dpkg fuse git zip openjdk-8-jre build-essential pkg-config python python-dev python-pip bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 mercurial subversion zlib1g-dev libncurses5-dev libncursesw5-dev
+    apt-get update
+
+    echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O ./miniconda.sh && \
+    /bin/bash ./miniconda.sh -b -p /opt/conda && \
+    rm ./miniconda.sh
+
+    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
+    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
+    dpkg -i tini.deb && \
+    rm tini.deb && \
+    apt-get clean
+
+    if [ ! -d "/opt/biotools" ];then mkdir /opt/biotools; fi
+    if [ ! -d "/opt/biotools/bin" ];then mkdir /opt/biotools/bin; fi
+    chmod 777 -R /opt/biotools/
+    export PATH=/opt/biotools/bin:$PATH
+    chmod 777 -R /opt/conda/
+    export PATH=/opt/conda/bin:$PATH
+    conda config --add channels bioconda
+    conda upgrade conda
+
+    if [ ! -d "/opt/workflows" ];then mkdir /opt/workflows; fi
+    if [ ! -d "/opt/workflows/bin" ];then mkdir /opt/workflows/bin; fi
+    chmod 777 -R /opt/workflows/
+    export PATH=/opt/workflows/bin:$PATH
+
+
+    cd $HOME
+
+    ## parallel
+    yes | apt-get install parallel
+
+    ## VCFTOOLS
+    git clone https://github.com/vcftools/vcftools.git
+    cd vcftools
+    ./autogen.sh
+    ./configure
+    make
+    make install
+    cd ..
+
+    ## PLINK
+    wget http://zzz.bwh.harvard.edu/plink/dist/plink-1.07-x86_64.zip
+    unzip plink-1.07-x86_64.zip
+    cd plink-1.07-x86_64
+    chmod +x plink
+    cp plink /usr/local/bin/plink
+    cd ..
+
+    ## ADMIXTURE
+
+    wget http://software.genetics.ucla.edu/admixture/binaries/admixture_linux-1.3.0.tar.gz
+    tar xvzf admixture_linux-1.3.0.tar.gz
+    cd admixture_linux-1.3.0
+    chmod +x admixture
+    cp admixture /usr/local/bin/admixture
+    cd ..
+
+

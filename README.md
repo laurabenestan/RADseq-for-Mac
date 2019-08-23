@@ -21,22 +21,27 @@ done
 ```
 ### Run Admixture
 Go into the folder where your bed file is. Add the path of this file in your terminal by typing:
-
+```{r, engine = 'bash', eval = FALSE}
 for K in 1 2 3 4 5; do admixture --cv=10 -B2000 -j8 nameofyourfile.bed $K | tee log${K}.out; done
+done
+```
 
 ### Collect the cross validation information obtained from the log files
+```{r, engine = 'bash', eval = FALSE}
 grep -h CV log*.out>cross_validation.txt
+done
+```
 
 ### Take the right order for individual id using the tfam file
+```{r, engine = 'bash', eval = FALSE}
 cut -f 1 nameofyourfile.tfam > id_admixture.txt
-
-### Remove last features
-rm(list=ls())
-ls()
+done
+```
 
 ### Use R to analyze the results 
-First, download librairies:
+First, remove last features and download librairies:
 ```{r}
+rm(list=ls())
 library(stringr)
 library(ggplot2)
 library(dplyr)
@@ -76,4 +81,30 @@ Save the graph
 ggsave("Admixture_cross-validation.pdf",width=7,height=5,dpi=600)
 dev.off()
 ```
+![Admixture cross-validation results.](Admixture.png)
 
+## Install [R studio](https://www.rstudio.com/products/rstudio/download/)
+R studio has developped an integrated development environment for R, with a console that supports direct code execution.
+
+# Install devtools package
+First install devtools package that allows you to directly download R package available in github.
+```{r}
+install.packages("devtools")
+```
+
+Then, a variety of useful package for population genomics such as ***adegenet***, ***strataG***, ***assigner*** are available in R.
+
+```{r}
+install.packages("adegenet")
+install.packages("strataG")
+install.packages("assigner")
+install.packages("radiator")
+install.packages("ape")
+install.packages("poppr")
+install.packages("hierfstat")
+install.packages("dartR")
+install.packages("StAMPP")
+install.packages("genetics")
+install.packages("LDna")
+install.packages("ade4")
+```
