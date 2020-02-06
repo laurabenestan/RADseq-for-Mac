@@ -53,6 +53,11 @@ brew cask install java
 brew cask info java
 ```
 
+### Install [PGDSpider](http://www.cmpg.unibe.ch/software/PGDSpider/)
+PGDSpider is a data conversion tool for population genetic and genomics programs. 
+It support a vast range of data types with the ability of parsing 33 and writing 36 different file formats
+
+
 ## Install [ADMIXTURE](http://software.genetics.ucla.edu/admixture/)
 ADMIXTURE is a software tool for maximum likelihood estimation of individual ancestries from multilocus SNP genotype datasets. It uses the same statistical model as STRUCTURE but calculates estimates much more rapidly using a fast numerical optimization algorithm.
 To use ADMIXTURE, you need to transfor your file vcf file into a bed format via plink by typing the ***make-bed*** command available in PLINK:
