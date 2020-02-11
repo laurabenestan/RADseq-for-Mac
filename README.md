@@ -7,14 +7,14 @@ Here you will find a list of usefull programs and R packages usefull for perform
 xcode-select --install
 ```
 
-### Install GDAL
-```{r, engine = 'bash', eval = FALSE}
-brew install gdal --HEAD
-```
-
 ### Install Homebrew
 ```{r, engine = 'bash', eval = FALSE}
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+### Install GDAL
+```{r, engine = 'bash', eval = FALSE}
+brew install gdal --HEAD
 ```
 
 ### Install SHUFF command
@@ -25,6 +25,11 @@ brew install coreutils
 ### Install wget
 ```{r, engine = 'bash', eval = FALSE}
 brew install wget
+```
+
+### Install gsl
+```{r, engine = 'bash', eval = FALSE}
+brew install gsl
 ```
 
 ## Programs
