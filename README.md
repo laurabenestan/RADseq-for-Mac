@@ -72,10 +72,12 @@ done
 ```
 
 ### Install BEDOPS
+```{r, engine = 'bash', eval = FALSE}
 git clone https://github.com/bedops/bedops.git
 cd bedops
 make
 make install
+```
 
 ### Install [R studio](https://www.rstudio.com/products/rstudio/download/)
 R studio has developped an integrated development environment for R, with a console that supports direct code execution.
@@ -110,4 +112,19 @@ install.packages("LDna")
 install.packages("ade4")
 devtools::install_github('royfrancis/pophelper')
 devtools::install_github("thierrygosselin/assigner")
+```
+
+### Set up your bash profile in MAcOs Catalina
+
+Forst, create a folder named 00-Programs and placed it in your local environment, with a short cut access. 
+In this folder you will enter all the binaies that you need to use for running programs such as **admixture**, **Bayescan** or **VCFTOOLS** for instance.
+
+Create your bash_profile that is now named zprofile in macOS Catalina.
+```{r, engine = 'bash', eval = FALSE}
+nano .zprofile
+```
+
+Add this folder path to your zprofile file.
+```{r, engine = 'bash', eval = FALSE}
+export PATH=$PATH:/Users/laurabenestan/Dropbox/02-Bio-informatics/00-Programs
 ```
